@@ -1,0 +1,45 @@
+# Author: Peter Finn C16407722
+# Tested on python 1,2,3
+
+import sys
+if len(sys.argv) != 4:
+	print("Invalid number of arguements")
+	print("Usage: python lab2.py [keyword] [path to file] [D for decrypt and E for encrypt]")
+	exit()
+fileDirectory=str(sys.argv[2])
+password=str(sys.argv[1]).upper() # var shiftNum is the number of shifts
+DorE=str(sys.argv[3])
+
+def crypt(value,password):
+
+	done=0
+	if DorE == "E": #encrypt by adding value -65
+		done=(value+(password-65))
+		if done > 90:
+			done = (done % 90)+64
+
+	elif DorE == "D":
+		done=(value-(password-65))
+		if done < 65:
+			done=done+25
+
+	#print(chr(done))
+	return done
+
+with open(fileDirectory,"r") as file1:	# opens the file
+	pwditerator=0
+	pwdlen=int(len(password))
+	while True:
+		pwdchar=password[pwditerator]
+		pwditerator=(pwditerator+1)%pwdlen #iterate through password mod passlen
+
+		charecter = file1.read(1)
+		if not charecter:
+			break
+		charecter=charecter.upper()
+
+		if ord(charecter) <= 90 and ord(charecter) >= 65:
+			result=chr(crypt(ord(charecter),ord(pwdchar)))
+		else:
+			result = charecter
+		sys.stdout.write(result)
